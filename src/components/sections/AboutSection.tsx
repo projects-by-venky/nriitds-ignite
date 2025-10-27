@@ -1,5 +1,5 @@
-import { Award, Target, Eye, Heart } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
+import { motion } from "framer-motion";
+import { Award, Target, Eye, Heart, Users, TrendingUp } from "lucide-react";
 
 const AboutSection = () => {
   const values = [
@@ -11,99 +11,154 @@ const AboutSection = () => {
     {
       icon: Target,
       title: "Innovation",
-      description: "Embracing cutting-edge technology and AI-driven methodologies for modern learning.",
+      description: "Embracing cutting-edge technology and methodologies for modern learning.",
     },
     {
       icon: Eye,
       title: "Vision",
-      description: "Creating future leaders who will make a positive impact on society and industry.",
+      description: "Creating future leaders who will make a positive impact on society.",
     },
     {
       icon: Heart,
       title: "Integrity",
-      description: "Upholding ethical values and building character alongside academic achievement.",
+      description: "Upholding ethical values and building character alongside achievement.",
     },
   ];
 
+  const features = [
+    { icon: Users, title: "100K+ Students", description: "Across all branches and programs" },
+    { icon: Award, title: "NAAC A+ Accredited", description: "Recognized for quality education" },
+    { icon: TrendingUp, title: "95% Placement", description: "Industry-leading placement record" },
+  ];
+
   return (
-    <section id="about" className="py-20 bg-muted/30">
+    <section id="about" className="section-padding bg-gradient-subtle">
       <div className="container mx-auto px-4">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           {/* Section Header */}
-          <div className="text-center mb-16">
-            <span className="text-accent font-semibold text-sm uppercase tracking-wider">About Us</span>
-            <h2 className="text-4xl md:text-5xl font-bold text-foreground mt-3 mb-4">
-              Building Tomorrow's Leaders
-            </h2>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              NRIITDS stands at the forefront of educational excellence, combining traditional values with modern innovation.
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="section-header"
+          >
+            <span className="text-accent font-semibold text-sm uppercase tracking-wider">About NRI Institutions</span>
+            <h2 className="section-title">Building the Future, Engineer by Engineer</h2>
+            <p className="section-subtitle">
+              A unified digital ecosystem connecting Engineering, Management, Pharmacy, Architecture, and more under one seamless experience.
             </p>
-          </div>
+          </motion.div>
 
-          {/* Main Content */}
-          <div className="grid md:grid-cols-2 gap-12 mb-16">
-            {/* Left Column */}
+          {/* Main Content Grid */}
+          <div className="grid lg:grid-cols-2 gap-12 mb-16">
+            {/* Left: Story Cards */}
             <div className="space-y-6">
-              <div className="gradient-card rounded-3xl p-8 shadow-lg">
-                <h3 className="text-2xl font-bold text-foreground mb-4">Our Story</h3>
+              <motion.div
+                initial={{ opacity: 0, x: -30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="card-professional p-8 card-hover-lift"
+              >
+                <h3 className="text-2xl font-bold mb-4">Who We Are</h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  Founded with a vision to revolutionize education, NRIITDS has been at the forefront of 
-                  academic innovation for years. We blend traditional teaching wisdom with AI-powered 
-                  learning tools to create an unparalleled educational experience.
+                  NRI Institutions stands as a beacon of excellence in education, bringing together multiple disciplines under one unified platform. We're not just a college—we're a connected campus serving over 100,000 students, faculty, and staff.
                 </p>
-              </div>
-              <div className="gradient-card rounded-3xl p-8 shadow-lg">
-                <h3 className="text-2xl font-bold text-foreground mb-4">Our Mission</h3>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, x: -30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.1 }}
+                className="card-professional p-8 card-hover-lift"
+              >
+                <h3 className="text-2xl font-bold mb-4">Our Mission</h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  To empower students with knowledge, skills, and values that prepare them for global 
-                  challenges. We strive to create an inclusive environment where innovation thrives and 
-                  every student reaches their full potential.
+                  To empower every mind with knowledge, skills, and values that prepare them for global challenges. We create an inclusive environment where innovation thrives and dreams become reality.
                 </p>
-              </div>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, x: -30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="card-professional p-8 card-hover-lift"
+              >
+                <h3 className="text-2xl font-bold mb-4">Our Vision</h3>
+                <p className="text-muted-foreground leading-relaxed">
+                  To be recognized globally as an institution that transforms lives through education, research, and innovation—building a better tomorrow for all.
+                </p>
+              </motion.div>
             </div>
 
-            {/* Right Column - Values Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {values.map((value, index) => (
-                <Card 
-                  key={index} 
-                  className="gradient-card border-0 hover:shadow-accent transition-all duration-300 hover:-translate-y-1"
-                >
-                  <CardContent className="p-6">
-                    <div className="w-12 h-12 rounded-xl gradient-primary flex items-center justify-center mb-4 shadow-glow">
-                      <value.icon className="w-6 h-6 text-primary-foreground" />
-                    </div>
-                    <h4 className="text-lg font-bold text-foreground mb-2">{value.title}</h4>
-                    <p className="text-muted-foreground text-sm leading-relaxed">
-                      {value.description}
-                    </p>
-                  </CardContent>
-                </Card>
-              ))}
+            {/* Right: Values Grid */}
+            <div className="space-y-6">
+              <motion.h3
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="text-2xl font-bold mb-6"
+              >
+                Our Core Values
+              </motion.h3>
+              
+              <div className="grid sm:grid-cols-2 gap-6">
+                {values.map((value, index) => {
+                  const Icon = value.icon;
+                  return (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, y: 30 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.6, delay: index * 0.1 }}
+                      className="card-professional p-6 card-hover-lift"
+                    >
+                      <div className="w-12 h-12 rounded-lg bg-gradient-corporate flex items-center justify-center mb-4">
+                        <Icon className="w-6 h-6 text-white" />
+                      </div>
+                      <h4 className="text-lg font-bold mb-2">{value.title}</h4>
+                      <p className="text-muted-foreground text-sm leading-relaxed">
+                        {value.description}
+                      </p>
+                    </motion.div>
+                  );
+                })}
+              </div>
             </div>
           </div>
 
-          {/* Stats Bar */}
-          <div className="gradient-primary rounded-3xl p-8 text-white">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-              <div>
-                <div className="text-4xl font-bold mb-2">15+</div>
-                <div className="text-white/80 text-sm">Years of Excellence</div>
-              </div>
-              <div>
-                <div className="text-4xl font-bold mb-2">200+</div>
-                <div className="text-white/80 text-sm">Expert Faculty</div>
-              </div>
-              <div>
-                <div className="text-4xl font-bold mb-2">50+</div>
-                <div className="text-white/80 text-sm">Industry Partners</div>
-              </div>
-              <div>
-                <div className="text-4xl font-bold mb-2">10K+</div>
-                <div className="text-white/80 text-sm">Alumni Network</div>
-              </div>
+          {/* Features Bar */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="gradient-corporate rounded-2xl p-8 md:p-12"
+          >
+            <div className="grid md:grid-cols-3 gap-8 text-white text-center">
+              {features.map((feature, index) => {
+                const Icon = feature.icon;
+                return (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6, delay: index * 0.1 }}
+                  >
+                    <Icon className="w-12 h-12 mx-auto mb-4 opacity-90" />
+                    <div className="text-3xl font-bold mb-2">{feature.title}</div>
+                    <div className="text-white/80 text-sm">{feature.description}</div>
+                  </motion.div>
+                );
+              })}
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>
