@@ -10,11 +10,11 @@ const Header = () => {
   const navLinks = [
     { name: "Home", href: "/" },
     { name: "About", href: "/about" },
-    { name: "Departments", href: "/courses" },
-    { name: "Admissions", href: "#admissions" },
-    { name: "Research", href: "#research" },
-    { name: "Placements", href: "#placements" },
-    { name: "Campus Life", href: "#campus" },
+    { name: "Branches", href: "/#branches" },
+    { name: "Research", href: "/#research" },
+    { name: "Placements", href: "/#placements" },
+    { name: "Campus Life", href: "/#campus" },
+    { name: "Events", href: "/events" },
     { name: "Contact", href: "/contact" },
   ];
 

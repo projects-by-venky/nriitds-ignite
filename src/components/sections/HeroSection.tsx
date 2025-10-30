@@ -42,10 +42,10 @@ const HeroSection = () => {
             className="text-5xl md:text-6xl lg:text-7xl font-black mb-8 leading-tight"
           >
             <span className="block text-white">
-              Empowering Innovation.
+              NRIIT — Empowering Minds,
             </span>
             <span className="block bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent mt-2">
-              Inspiring Excellence.
+              Building Futures.
             </span>
           </motion.h1>
 
@@ -57,7 +57,7 @@ const HeroSection = () => {
             className="text-xl md:text-2xl text-white/80 mb-16 max-w-4xl mx-auto leading-relaxed font-light"
             style={{ textShadow: '0 0 20px hsl(182 59% 56% / 0.3)' }}
           >
-            Shaping the future through technology, creativity, and purpose.
+            A unified platform for every student, teacher, and department.
           </motion.p>
 
           {/* CTA Buttons */}
@@ -67,20 +67,22 @@ const HeroSection = () => {
             transition={{ duration: 1, delay: 0.8 }}
             className="flex flex-col sm:flex-row gap-6 justify-center items-center"
           >
-            <motion.button
-              whileHover={{ scale: 1.05, boxShadow: "0 0 40px hsl(217 91% 60% / 0.8)" }}
-              whileTap={{ scale: 0.98 }}
-              className="bg-primary text-white px-10 py-5 rounded-xl font-bold text-lg shadow-[0_0_30px_hsl(217_91%_60%_/_0.5)] transition-all duration-300 flex items-center gap-3"
-            >
-              lets see
-              <ArrowRight className="w-6 h-6" />
-            </motion.button>
+            <a href="#branches">
+              <motion.button
+                whileHover={{ scale: 1.05, boxShadow: "0 0 40px hsl(217 91% 60% / 0.8)" }}
+                whileTap={{ scale: 0.98 }}
+                className="bg-primary text-white px-10 py-5 rounded-xl font-bold text-lg shadow-[0_0_30px_hsl(217_91%_60%_/_0.5)] transition-all duration-300 flex items-center gap-3"
+              >
+                Let's See
+                <ArrowRight className="w-6 h-6" />
+              </motion.button>
+            </a>
             <motion.button
               whileHover={{ scale: 1.05, boxShadow: "0 0 40px hsl(182 59% 56% / 0.6)" }}
               whileTap={{ scale: 0.98 }}
               className="bg-transparent border-2 border-secondary text-secondary px-10 py-5 rounded-xl font-bold text-lg hover:bg-secondary/10 transition-all duration-300"
             >
-              Join Our Community
+              Login
             </motion.button>
           </motion.div>
 
