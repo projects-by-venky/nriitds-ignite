@@ -65,7 +65,7 @@ const Header = () => {
               whileTap={{ scale: 0.98 }}
               className="ml-4 px-6 py-2 rounded-lg bg-primary text-white font-semibold shadow-[0_0_20px_hsl(217_91%_60%_/_0.4)] hover:shadow-[0_0_30px_hsl(217_91%_60%_/_0.6)] transition-all text-sm"
             >
-              Apply Now
+              Lets See
             </motion.button>
           </nav>
 
