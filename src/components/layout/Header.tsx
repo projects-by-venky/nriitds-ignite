@@ -57,18 +57,22 @@ const Header = () => {
                 </Link>
               );
             })}
-            <Link to="/#branches">
-              <motion.button
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: navLinks.length * 0.1 }}
-                whileHover={{ scale: 1.05, boxShadow: "0 0 20px hsl(217 91% 60% / 0.6)" }}
-                whileTap={{ scale: 0.98 }}
-                className="ml-4 px-6 py-2 rounded-lg bg-primary text-white font-semibold shadow-[0_0_20px_hsl(217_91%_60%_/_0.4)] hover:shadow-[0_0_30px_hsl(217_91%_60%_/_0.6)] transition-all text-sm"
-              >
-                Lets See
-              </motion.button>
-            </Link>
+            <motion.button
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: navLinks.length * 0.1 }}
+              whileHover={{ scale: 1.05, boxShadow: "0 0 20px hsl(217 91% 60% / 0.6)" }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => {
+                const element = document.getElementById('branches');
+                if (element) {
+                  element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+              }}
+              className="ml-4 px-6 py-2 rounded-lg bg-primary text-white font-semibold shadow-[0_0_20px_hsl(217_91%_60%_/_0.4)] hover:shadow-[0_0_30px_hsl(217_91%_60%_/_0.6)] transition-all text-sm cursor-pointer"
+            >
+              Lets See
+            </motion.button>
           </nav>
 
           {/* Mobile Menu Button */}
@@ -108,11 +112,20 @@ const Header = () => {
                   </Link>
                 );
               })}
-              <Link to="/#branches" onClick={() => setIsOpen(false)}>
-                <button className="mt-2 px-6 py-3 rounded-lg bg-primary text-white font-semibold shadow-[0_0_20px_hsl(217_91%_60%_/_0.4)] text-sm w-full">
-                  Lets See
-                </button>
-              </Link>
+              <button 
+                className="mt-2 px-6 py-3 rounded-lg bg-primary text-white font-semibold shadow-[0_0_20px_hsl(217_91%_60%_/_0.4)] text-sm w-full"
+                onClick={() => {
+                  setIsOpen(false);
+                  setTimeout(() => {
+                    const element = document.getElementById('branches');
+                    if (element) {
+                      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                  }, 300);
+                }}
+              >
+                Lets See
+              </button>
             </nav>
           </motion.div>
         )}
