@@ -57,16 +57,18 @@ const Header = () => {
                 </Link>
               );
             })}
-            <motion.button
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: navLinks.length * 0.1 }}
-              whileHover={{ scale: 1.05, boxShadow: "0 0 20px hsl(217 91% 60% / 0.6)" }}
-              whileTap={{ scale: 0.98 }}
-              className="ml-4 px-6 py-2 rounded-lg bg-primary text-white font-semibold shadow-[0_0_20px_hsl(217_91%_60%_/_0.4)] hover:shadow-[0_0_30px_hsl(217_91%_60%_/_0.6)] transition-all text-sm"
-            >
-              Lets See
-            </motion.button>
+            <Link to="/#branches">
+              <motion.button
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: navLinks.length * 0.1 }}
+                whileHover={{ scale: 1.05, boxShadow: "0 0 20px hsl(217 91% 60% / 0.6)" }}
+                whileTap={{ scale: 0.98 }}
+                className="ml-4 px-6 py-2 rounded-lg bg-primary text-white font-semibold shadow-[0_0_20px_hsl(217_91%_60%_/_0.4)] hover:shadow-[0_0_30px_hsl(217_91%_60%_/_0.6)] transition-all text-sm"
+              >
+                Lets See
+              </motion.button>
+            </Link>
           </nav>
 
           {/* Mobile Menu Button */}
@@ -106,9 +108,11 @@ const Header = () => {
                   </Link>
                 );
               })}
-              <button className="mt-2 px-6 py-3 rounded-lg bg-primary text-white font-semibold shadow-[0_0_20px_hsl(217_91%_60%_/_0.4)] text-sm w-full">
-                Apply Now
-              </button>
+              <Link to="/#branches" onClick={() => setIsOpen(false)}>
+                <button className="mt-2 px-6 py-3 rounded-lg bg-primary text-white font-semibold shadow-[0_0_20px_hsl(217_91%_60%_/_0.4)] text-sm w-full">
+                  Lets See
+                </button>
+              </Link>
             </nav>
           </motion.div>
         )}
