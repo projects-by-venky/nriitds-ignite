@@ -16,12 +16,12 @@ const departments = {
 };
 
 const sections = [
-  { icon: Users, title: "Manage Students", desc: "Attendance & Marks", color: "#0EA5E9" },
-  { icon: Upload, title: "Upload Notes", desc: "Study Materials", color: "#8B5CF6" },
-  { icon: Calendar, title: "Timetable", desc: "Schedule Manager", color: "#22C55E" },
-  { icon: Megaphone, title: "Announcements", desc: "Post Circulars", color: "#F59E0B" },
-  { icon: MessageSquare, title: "Feedback", desc: "Student Queries", color: "#EC4899" },
-  { icon: BarChart, title: "Analytics", desc: "Performance Reports", color: "#6366F1" }
+  { icon: Users, title: "Manage Students", desc: "Attendance & Marks" },
+  { icon: Upload, title: "Upload Notes", desc: "Study Materials" },
+  { icon: Calendar, title: "Timetable", desc: "Schedule Manager" },
+  { icon: Megaphone, title: "Announcements", desc: "Post Circulars" },
+  { icon: MessageSquare, title: "Feedback", desc: "Student Queries" },
+  { icon: BarChart, title: "Analytics", desc: "Performance Reports" }
 ];
 
 const FacultyPortal = () => {
@@ -81,13 +81,11 @@ const FacultyPortal = () => {
                   className="relative group cursor-pointer"
                 >
                   <div 
-                    className="absolute inset-0 rounded-2xl blur-xl opacity-0 group-hover:opacity-50 transition-opacity"
-                    style={{ backgroundColor: section.color }}
+                    className="absolute inset-0 rounded-2xl blur-xl opacity-0 group-hover:opacity-50 transition-opacity bg-primary"
                   />
                   <div className="relative bg-card/80 backdrop-blur-md border-2 border-border/50 rounded-2xl p-8 hover:border-primary/50 transition-all h-full">
                     <div 
-                      className="w-14 h-14 rounded-xl flex items-center justify-center mb-4"
-                      style={{ backgroundColor: section.color }}
+                      className="w-14 h-14 rounded-xl bg-gradient-cyber flex items-center justify-center mb-4"
                     >
                       <Icon className="w-7 h-7 text-white" />
                     </div>
