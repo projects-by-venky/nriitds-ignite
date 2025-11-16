@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Calendar, Download, Filter, X, Search } from "lucide-react";
 import { AttendanceTable } from "@/components/attendance/AttendanceTable";
+import { BulkActionsToolbar } from "@/components/attendance/BulkActionsToolbar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
@@ -18,6 +19,7 @@ import {
 } from "@/components/ui/popover";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { format } from "date-fns";
+import { toast } from "@/hooks/use-toast";
 
 export type AttendanceFilter = "all" | "present" | "absent";
 
@@ -27,6 +29,46 @@ const Attendance = () => {
   const [endDate, setEndDate] = useState<Date | undefined>(undefined);
   const [showFilters, setShowFilters] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedStudents, setSelectedStudents] = useState<Set<string>>(new Set());
+
+  const handleSelectStudent = (rollNo: string, selected: boolean) => {
+    const newSelected = new Set(selectedStudents);
+    if (selected) {
+      newSelected.add(rollNo);
+    } else {
+      newSelected.delete(rollNo);
+    }
+    setSelectedStudents(newSelected);
+  };
+
+  const handleSelectAll = (rollNos: string[], selected: boolean) => {
+    if (selected) {
+      setSelectedStudents(new Set(rollNos));
+    } else {
+      setSelectedStudents(new Set());
+    }
+  };
+
+  const handleClearSelection = () => {
+    setSelectedStudents(new Set());
+  };
+
+  const handleSendNotifications = () => {
+    toast({
+      title: "Notifications Sent",
+      description: `Successfully sent notifications to ${selectedStudents.size} student${selectedStudents.size === 1 ? '' : 's'}.`,
+    });
+    setSelectedStudents(new Set());
+  };
+
+  const handleMarkAttendance = (status: "P" | "A") => {
+    const statusText = status === "P" ? "Present" : "Absent";
+    toast({
+      title: "Attendance Marked",
+      description: `Marked ${selectedStudents.size} student${selectedStudents.size === 1 ? '' : 's'} as ${statusText}.`,
+    });
+    setSelectedStudents(new Set());
+  };
 
   const clearFilters = () => {
     setStatusFilter("all");
@@ -232,11 +274,22 @@ const Attendance = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
         >
+          {/* Bulk Actions Toolbar */}
+          <BulkActionsToolbar
+            selectedCount={selectedStudents.size}
+            onClearSelection={handleClearSelection}
+            onSendNotifications={handleSendNotifications}
+            onMarkAttendance={handleMarkAttendance}
+          />
+
           <AttendanceTable 
             statusFilter={statusFilter}
             startDate={startDate}
             endDate={endDate}
             searchQuery={searchQuery}
+            selectedStudents={selectedStudents}
+            onSelectStudent={handleSelectStudent}
+            onSelectAll={handleSelectAll}
           />
         </motion.div>
       </div>
