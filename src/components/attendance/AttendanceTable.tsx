@@ -1,4 +1,5 @@
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 import { AttendanceFilter } from "@/pages/Attendance";
 import { parse, isWithinInterval } from "date-fns";
@@ -185,13 +186,19 @@ interface AttendanceTableProps {
   startDate?: Date;
   endDate?: Date;
   searchQuery?: string;
+  selectedStudents?: Set<string>;
+  onSelectStudent?: (rollNo: string, selected: boolean) => void;
+  onSelectAll?: (rollNos: string[], selected: boolean) => void;
 }
 
 export const AttendanceTable = ({ 
   statusFilter = "all",
   startDate,
   endDate,
-  searchQuery = ""
+  searchQuery = "",
+  selectedStudents = new Set(),
+  onSelectStudent,
+  onSelectAll,
 }: AttendanceTableProps) => {
   // Filter dates based on date range
   const filteredDates = mockAttendanceData.dates.filter((dateObj) => {
@@ -267,6 +274,11 @@ export const AttendanceTable = ({
     );
   }
 
+  const allFilteredRollNos = filteredStudents.map(s => s.rollNo);
+  const allSelected = allFilteredRollNos.length > 0 && 
+    allFilteredRollNos.every(rollNo => selectedStudents.has(rollNo));
+  const someSelected = allFilteredRollNos.some(rollNo => selectedStudents.has(rollNo));
+
   return (
     <div className="bg-card rounded-lg border border-border shadow-sm overflow-hidden">
       <ScrollArea className="w-full">
@@ -276,7 +288,17 @@ export const AttendanceTable = ({
             {/* Header Group 1: Dates */}
             <thead className="sticky top-0 z-20 bg-card">
               <tr className="border-b border-border">
-                <th className="sticky left-0 z-30 bg-card border-r border-border px-4 py-3 text-left font-semibold text-foreground min-w-[120px]">
+                <th className="sticky left-0 z-30 bg-card border-r border-border px-3 py-3 text-center min-w-[50px]">
+                  <Checkbox
+                    checked={allSelected}
+                    onCheckedChange={(checked) => 
+                      onSelectAll?.(allFilteredRollNos, checked === true)
+                    }
+                    aria-label="Select all students"
+                    className={someSelected && !allSelected ? "data-[state=checked]:bg-primary/50" : ""}
+                  />
+                </th>
+                <th className="sticky left-[50px] z-30 bg-card border-r border-border px-4 py-3 text-left font-semibold text-foreground min-w-[120px]">
                   Date
                 </th>
                 {filteredDates.map((dateObj, dateIdx) => (
@@ -292,7 +314,8 @@ export const AttendanceTable = ({
 
               {/* Header Group 2: Hour Numbers */}
               <tr className="border-b border-border">
-                <th className="sticky left-0 z-30 bg-card border-r border-border px-4 py-3 text-left font-semibold text-foreground">
+                <th className="sticky left-0 z-30 bg-card border-r border-border px-3 py-3 min-w-[50px]"></th>
+                <th className="sticky left-[50px] z-30 bg-card border-r border-border px-4 py-3 text-left font-semibold text-foreground">
                   Hour
                 </th>
                 {filteredDates.map((dateObj, dateIdx) =>
@@ -309,7 +332,8 @@ export const AttendanceTable = ({
 
               {/* Header Group 3: Subject/Lab */}
               <tr className="border-b border-border">
-                <th className="sticky left-0 z-30 bg-card border-r border-border px-4 py-3 text-left font-semibold text-foreground">
+                <th className="sticky left-0 z-30 bg-card border-r border-border px-3 py-3 min-w-[50px]"></th>
+                <th className="sticky left-[50px] z-30 bg-card border-r border-border px-4 py-3 text-left font-semibold text-foreground">
                   Subject/Lab
                 </th>
                 {filteredDates.map((dateObj, dateIdx) =>
@@ -326,7 +350,8 @@ export const AttendanceTable = ({
 
               {/* Header Group 4: Faculty */}
               <tr className="border-b-2 border-border">
-                <th className="sticky left-0 z-30 bg-card border-r border-border px-4 py-3 text-left font-semibold text-foreground">
+                <th className="sticky left-0 z-30 bg-card border-r border-border px-3 py-3 min-w-[50px]"></th>
+                <th className="sticky left-[50px] z-30 bg-card border-r border-border px-4 py-3 text-left font-semibold text-foreground">
                   Faculty
                 </th>
                 {filteredDates.map((dateObj, dateIdx) =>
@@ -349,11 +374,23 @@ export const AttendanceTable = ({
                   key={student.rollNo}
                   className={cn(
                     "border-b border-border hover:bg-muted/20 transition-colors",
-                    studentIdx % 2 === 0 ? "bg-background" : "bg-muted/5"
+                    studentIdx % 2 === 0 ? "bg-background" : "bg-muted/5",
+                    selectedStudents.has(student.rollNo) && "bg-primary/5"
                   )}
                 >
+                  {/* Checkbox - Sticky */}
+                  <td className="sticky left-0 z-10 bg-inherit border-r border-border px-3 py-3 text-center min-w-[50px]">
+                    <Checkbox
+                      checked={selectedStudents.has(student.rollNo)}
+                      onCheckedChange={(checked) =>
+                        onSelectStudent?.(student.rollNo, checked === true)
+                      }
+                      aria-label={`Select ${student.rollNo}`}
+                    />
+                  </td>
+
                   {/* Roll Number - Sticky */}
-                  <td className="sticky left-0 z-10 bg-inherit border-r border-border px-4 py-3 font-medium text-foreground">
+                  <td className="sticky left-[50px] z-10 bg-inherit border-r border-border px-4 py-3 font-medium text-foreground">
                     {student.rollNo}
                   </td>
 
