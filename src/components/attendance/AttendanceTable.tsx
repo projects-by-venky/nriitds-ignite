@@ -205,7 +205,7 @@ export const AttendanceTable = ({
       transition={{ duration: 0.4 }}
       className="bg-white rounded-lg border-2 border-[#1E3A8A] shadow-xl overflow-hidden"
     >
-      <ScrollArea className="w-full h-[70vh]">
+      <ScrollArea className="w-full h-[calc(100vh-200px)]">
         <div className="min-w-max">
           {/* Table Structure */}
           <table className="w-full border-collapse">
