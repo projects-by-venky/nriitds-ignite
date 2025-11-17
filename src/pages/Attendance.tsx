@@ -85,7 +85,7 @@ const Attendance = () => {
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-card border-b border-border sticky top-0 z-10"
+        className="bg-card border-b border-border sticky top-0 z-50"
       >
         <div className="container mx-auto px-4 py-4">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
