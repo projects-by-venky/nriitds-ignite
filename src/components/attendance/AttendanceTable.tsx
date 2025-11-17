@@ -205,12 +205,12 @@ export const AttendanceTable = ({
       transition={{ duration: 0.4 }}
       className="bg-white rounded-lg border-2 border-[#1E3A8A] shadow-xl overflow-hidden"
     >
-      <ScrollArea className="w-full">
+      <ScrollArea className="w-full max-h-[calc(100vh-250px)]">
         <div className="min-w-max">
           {/* Table Structure */}
           <table className="w-full border-collapse">
             {/* Header Group 1: Dates */}
-            <thead className="sticky top-0 z-20 bg-white">
+            <thead className="sticky top-0 z-20 bg-white shadow-sm">
               <tr className="border-b-2 border-[#1E3A8A]">
                 <th className="sticky left-0 z-30 bg-white border-r-2 border-[#1E3A8A] px-3 py-3 text-center min-w-[50px]">
                   <Checkbox
