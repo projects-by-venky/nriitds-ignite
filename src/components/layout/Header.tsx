@@ -62,7 +62,7 @@ const Header = () => {
                 y: 0
               }} transition={{
                 delay: index * 0.1
-              }} className="shadow-sm">
+              }} className="shadow-sm px-[16px] py-[32px] mx-0 my-0 rounded-full">
                     {link.name}
                   </motion.div>
                 </Link>;
