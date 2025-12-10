@@ -83,7 +83,9 @@ const StudentPortal = () => {
 
             {/* MID Time Tables */}
             <ContentSection title="MID Time Tables & Important Questions" icon={<Calendar className="w-6 h-6" />}>
-              <ActionButton label="2-2 MID-2 Time Table" fullWidth />
+              <a href="/documents/2-2_Mid-2_TimeTable_April-2025.pdf" download className="w-full">
+                <ActionButton label="Download 2-2 MID-2 Time Table" fullWidth />
+              </a>
               <ActionButton label="IMP Questions Section" fullWidth />
             </ContentSection>
 
