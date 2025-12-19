@@ -209,7 +209,9 @@ const StudentPortal = () => {
               <a href="/documents/CSE-DS-Syllabus.pdf" download className="w-full">
                 <ActionButton label="2nd Year DS Syllabus" fullWidth />
               </a>
-              <ActionButton label="3rd Year DS Syllabus" />
+              <a href="/documents/CSE-DS-3rd-Year-Syllabus.pdf" download className="w-full">
+                <ActionButton label="3rd Year DS Syllabus" fullWidth />
+              </a>
               <a href="/documents/CSE-DS-Syllabus.pdf" download className="w-full">
                 <ActionButton label="4th Year DS Syllabus" fullWidth />
               </a>
