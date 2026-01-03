@@ -129,15 +129,24 @@ export const AttendanceTable = ({
   });
 
   // Filter students based on search query and attendance status
-  const filteredStudents = mockAttendanceData.students.map((student) => {
-    // Apply search filter first
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase();
-      const matchesRollNo = student.rollNo.toLowerCase().includes(query);
-      // Note: In real implementation, you'd have student names in the data
-      // For now, we'll just search by roll number
+  const filteredStudents = mockAttendanceData.students.filter((student) => {
+    // Apply search filter first - check if roll number contains the search query
+    if (searchQuery && searchQuery.trim() !== "") {
+      const query = searchQuery.trim().toLowerCase();
+      const rollNoLower = student.rollNo.toLowerCase();
+      
+      // Match if roll number contains the query anywhere
+      // Also support searching just the numeric part (last 2 digits)
+      const lastTwoDigits = student.rollNo.slice(-2);
+      const lastFourDigits = student.rollNo.slice(-4);
+      
+      const matchesRollNo = rollNoLower.includes(query) || 
+                            lastTwoDigits === query.padStart(2, '0') ||
+                            lastFourDigits.includes(query) ||
+                            query === lastTwoDigits;
+      
       if (!matchesRollNo) {
-        return null;
+        return false;
       }
     }
 
@@ -150,17 +159,17 @@ export const AttendanceTable = ({
     if (statusFilter === "present") {
       // Show only if student has at least one present record
       if (!allAttendance.some(status => status === "P")) {
-        return null;
+        return false;
       }
     } else if (statusFilter === "absent") {
       // Show only if student has at least one absent record
       if (!allAttendance.some(status => status === "A")) {
-        return null;
+        return false;
       }
     }
     
-    return student;
-  }).filter(Boolean) as typeof mockAttendanceData.students;
+    return true;
+  });
 
   // Show message if no data after filtering
   if (filteredDates.length === 0) {
