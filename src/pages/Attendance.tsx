@@ -121,7 +121,7 @@ const Attendance = () => {
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
                   type="text"
-                  placeholder="Search by roll number or name..."
+                  placeholder="Exact roll number or suffix (e.g., 40)"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-9 pr-10"

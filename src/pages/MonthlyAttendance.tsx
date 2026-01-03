@@ -78,25 +78,29 @@ const MonthlyAttendance = () => {
   const branch = sectionParts[2] || 'DS';
   const sectionLetter = sectionParts[3] || 'A';
 
-  // Filter students based on search query
+  // Filter students based on search query - EXACT MATCH ONLY
   const filteredStudents = useMemo(() => {
     if (!searchQuery || searchQuery.trim() === "") {
       return data.students;
     }
     
-    const query = searchQuery.trim().toLowerCase();
+    const query = searchQuery.trim().toUpperCase();
+    
+    // Check if query is purely numeric (suffix search)
+    const isNumericQuery = /^\d+$/.test(query);
     
     return data.students.filter(student => {
-      const rollNoLower = student.rollNumber.toLowerCase();
-      const lastTwoDigits = student.rollNumber.slice(-2);
-      const lastFourDigits = student.rollNumber.slice(-4);
+      const rollNoUpper = student.rollNumber.toUpperCase();
       
-      // Match if roll number contains the query anywhere
-      // Also support searching just the numeric part (last 2 digits)
-      return rollNoLower.includes(query) || 
-             lastTwoDigits === query.padStart(2, '0') ||
-             lastFourDigits.includes(query) ||
-             query === lastTwoDigits;
+      if (isNumericQuery) {
+        // For numeric input: match ONLY roll numbers ending EXACTLY with this number
+        // Extract the numeric suffix from the roll number
+        const rollNoNumericSuffix = student.rollNumber.replace(/\D/g, '').slice(-query.length);
+        return rollNoNumericSuffix === query;
+      } else {
+        // For full roll number input: exact match only
+        return rollNoUpper === query;
+      }
     });
   }, [data.students, searchQuery]);
 
@@ -146,7 +150,7 @@ const MonthlyAttendance = () => {
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <Input
                     type="text"
-                    placeholder="Search by roll number..."
+                    placeholder="Exact roll number or suffix (e.g., 40)"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="pl-9 pr-10 bg-white/10 border-white/20 text-white placeholder:text-white/50"

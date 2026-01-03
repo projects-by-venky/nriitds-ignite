@@ -130,20 +130,25 @@ export const AttendanceTable = ({
 
   // Filter students based on search query and attendance status
   const filteredStudents = mockAttendanceData.students.filter((student) => {
-    // Apply search filter first - check if roll number contains the search query
+    // Apply search filter first - EXACT MATCH ONLY
     if (searchQuery && searchQuery.trim() !== "") {
-      const query = searchQuery.trim().toLowerCase();
-      const rollNoLower = student.rollNo.toLowerCase();
+      const query = searchQuery.trim().toUpperCase();
+      const rollNoUpper = student.rollNo.toUpperCase();
       
-      // Match if roll number contains the query anywhere
-      // Also support searching just the numeric part (last 2 digits)
-      const lastTwoDigits = student.rollNo.slice(-2);
-      const lastFourDigits = student.rollNo.slice(-4);
+      // Check if query is purely numeric (suffix search)
+      const isNumericQuery = /^\d+$/.test(query);
       
-      const matchesRollNo = rollNoLower.includes(query) || 
-                            lastTwoDigits === query.padStart(2, '0') ||
-                            lastFourDigits.includes(query) ||
-                            query === lastTwoDigits;
+      let matchesRollNo = false;
+      
+      if (isNumericQuery) {
+        // For numeric input: match ONLY roll numbers ending EXACTLY with this number
+        // Extract the numeric suffix from the roll number
+        const rollNoNumericSuffix = student.rollNo.replace(/\D/g, '').slice(-query.length);
+        matchesRollNo = rollNoNumericSuffix === query;
+      } else {
+        // For full roll number input: exact match only
+        matchesRollNo = rollNoUpper === query;
+      }
       
       if (!matchesRollNo) {
         return false;
