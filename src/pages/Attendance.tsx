@@ -20,13 +20,19 @@ import {
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { toast } from "@/hooks/use-toast";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
+import Header from "@/components/layout/Header";
+import MobileBottomNav from "@/components/layout/MobileBottomNav";
+import MobileSearchBar from "@/components/mobile/MobileSearchBar";
+import MobileFilterSheet from "@/components/mobile/MobileFilterSheet";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export type AttendanceFilter = "all" | "present" | "absent";
 
 const Attendance = () => {
   const { section, deptId } = useParams<{ section?: string; deptId?: string }>();
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
   const [statusFilter, setStatusFilter] = useState<AttendanceFilter>("all");
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);
   const [endDate, setEndDate] = useState<Date | undefined>(undefined);
@@ -81,94 +87,106 @@ const Attendance = () => {
   };
 
   const hasActiveFilters = statusFilter !== "all" || startDate || endDate || searchQuery;
+  const activeFilterCount = [statusFilter !== "all", startDate, endDate].filter(Boolean).length;
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
+      <Header />
+      
+      {/* Mobile Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-card border-b border-border sticky top-0 z-50"
+        className="bg-card border-b border-border sticky top-14 md:top-16 z-40"
       >
-        <div className="container mx-auto px-4 py-4">
-          {/* Back Button */}
+        <div className="container mx-auto px-4 py-3 md:py-4">
+          {/* Back Button - Mobile */}
           {section && deptId && (
-            <motion.button
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              onClick={() => navigate(`/department/${deptId}/student-portal`)}
-              className="flex items-center gap-2 text-foreground/70 hover:text-primary transition-colors mb-4"
+            <Link
+              to={`/department/${deptId}/student-portal`}
+              className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-3 touch-target justify-start"
             >
               <ArrowLeft className="w-5 h-5" />
-              Back to Student Portal
-            </motion.button>
+              <span className="text-sm">Back</span>
+            </Link>
           )}
           
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div className="flex-1">
-              <h1 className="text-3xl font-bold text-foreground flex items-center gap-2">
-                <Calendar className="w-8 h-8 text-primary" />
-                Hourly Attendance {section && `- ${section}`}
+          {/* Title */}
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-gradient-cyber flex items-center justify-center flex-shrink-0">
+              <Calendar className="w-5 h-5 md:w-6 md:h-6 text-white" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <h1 className="text-lg md:text-2xl font-bold text-foreground truncate">
+                Hourly Attendance
               </h1>
-              <p className="text-muted-foreground mt-1">
-                {section ? `View attendance records for section ${section}` : 'View and track your attendance records'}
-              </p>
+              {section && (
+                <p className="text-xs md:text-sm text-muted-foreground truncate">
+                  Section: {section}
+                </p>
+              )}
+            </div>
+          </div>
+
+          {/* Search & Filter Row */}
+          <div className="flex gap-2 md:gap-3">
+            {/* Mobile Search */}
+            <div className="flex-1">
+              <MobileSearchBar
+                value={searchQuery}
+                onChange={setSearchQuery}
+                placeholder="Exact roll no. or suffix (e.g., 40)"
+              />
             </div>
 
-            {/* Search Bar */}
-            <div className="flex-1 max-w-md">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <Input
-                  type="text"
-                  placeholder="Exact roll number or suffix (e.g., 40)"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-9 pr-10"
-                />
-                {searchQuery && (
-                  <button
-                    onClick={() => setSearchQuery("")}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                )}
-              </div>
-            </div>
-            
-            <div className="flex gap-2">
+            {/* Filter Button - Mobile uses bottom sheet */}
+            {isMobile ? (
+              <MobileFilterSheet
+                statusFilter={statusFilter}
+                onStatusFilterChange={setStatusFilter}
+                startDate={startDate}
+                onStartDateChange={setStartDate}
+                endDate={endDate}
+                onEndDateChange={setEndDate}
+                onClear={clearFilters}
+                hasActiveFilters={!!hasActiveFilters}
+                activeFilterCount={activeFilterCount}
+              />
+            ) : (
               <Button 
                 variant={showFilters ? "default" : "outline"} 
                 size="sm"
+                className="h-12"
                 onClick={() => setShowFilters(!showFilters)}
               >
                 <Filter className="w-4 h-4 mr-2" />
                 Filter
                 {hasActiveFilters && (
                   <span className="ml-2 px-1.5 py-0.5 bg-primary-foreground text-primary text-xs rounded-full">
-                    {[statusFilter !== "all", startDate, endDate].filter(Boolean).length}
+                    {activeFilterCount}
                   </span>
                 )}
               </Button>
-              <Button variant="outline" size="sm">
-                <Download className="w-4 h-4 mr-2" />
-                Export
-              </Button>
-            </div>
+            )}
+
+            {/* Export Button */}
+            <Button variant="outline" size="sm" className="h-12 px-3 md:px-4">
+              <Download className="w-4 h-4 md:mr-2" />
+              <span className="hidden md:inline">Export</span>
+            </Button>
           </div>
         </div>
       </motion.div>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 py-6">
-        {/* Filter Panel */}
-        {showFilters && (
+      <div className="container mx-auto px-4 py-4 md:py-6 pb-24 md:pb-6">
+        {/* Desktop Filter Panel */}
+        {!isMobile && showFilters && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="mb-6 bg-card border border-border rounded-lg p-4"
+            className="mb-6 bg-card border border-border rounded-xl p-4"
           >
             <div className="flex flex-col md:flex-row gap-4">
               {/* Status Filter */}
@@ -255,34 +273,30 @@ const Attendance = () => {
                 </div>
               )}
             </div>
-
-            {/* Active Filters Summary */}
-            {hasActiveFilters && (
-              <div className="mt-4 flex flex-wrap gap-2">
-                <span className="text-sm text-muted-foreground">Active filters:</span>
-                {searchQuery && (
-                  <span className="inline-flex items-center px-2 py-1 bg-primary/10 text-primary text-xs rounded-md">
-                    Search: "{searchQuery}"
-                  </span>
-                )}
-                {statusFilter !== "all" && (
-                  <span className="inline-flex items-center px-2 py-1 bg-primary/10 text-primary text-xs rounded-md">
-                    Status: {statusFilter === "present" ? "Present" : "Absent"}
-                  </span>
-                )}
-                {startDate && (
-                  <span className="inline-flex items-center px-2 py-1 bg-primary/10 text-primary text-xs rounded-md">
-                    From: {format(startDate, "dd/MM/yyyy")}
-                  </span>
-                )}
-                {endDate && (
-                  <span className="inline-flex items-center px-2 py-1 bg-primary/10 text-primary text-xs rounded-md">
-                    To: {format(endDate, "dd/MM/yyyy")}
-                  </span>
-                )}
-              </div>
-            )}
           </motion.div>
+        )}
+
+        {/* Active Filters Summary */}
+        {hasActiveFilters && (
+          <div className="mb-4 flex flex-wrap gap-2">
+            <span className="text-xs text-muted-foreground">Filters:</span>
+            {searchQuery && (
+              <span className="inline-flex items-center px-2 py-1 bg-primary/10 text-primary text-xs rounded-lg">
+                Roll: "{searchQuery}"
+                <button onClick={() => setSearchQuery("")} className="ml-1.5">
+                  <X className="w-3 h-3" />
+                </button>
+              </span>
+            )}
+            {statusFilter !== "all" && (
+              <span className="inline-flex items-center px-2 py-1 bg-primary/10 text-primary text-xs rounded-lg">
+                {statusFilter === "present" ? "Present" : "Absent"}
+                <button onClick={() => setStatusFilter("all")} className="ml-1.5">
+                  <X className="w-3 h-3" />
+                </button>
+              </span>
+            )}
+          </div>
         )}
 
         <motion.div
@@ -298,17 +312,24 @@ const Attendance = () => {
             onMarkAttendance={handleMarkAttendance}
           />
 
-          <AttendanceTable 
-            statusFilter={statusFilter}
-            startDate={startDate}
-            endDate={endDate}
-            searchQuery={searchQuery}
-            selectedStudents={selectedStudents}
-            onSelectStudent={handleSelectStudent}
-            onSelectAll={handleSelectAll}
-          />
+          {/* Attendance Table - Responsive wrapper */}
+          <div className="bg-card border border-border rounded-xl overflow-hidden">
+            <div className="overflow-x-auto">
+              <AttendanceTable 
+                statusFilter={statusFilter}
+                startDate={startDate}
+                endDate={endDate}
+                searchQuery={searchQuery}
+                selectedStudents={selectedStudents}
+                onSelectStudent={handleSelectStudent}
+                onSelectAll={handleSelectAll}
+              />
+            </div>
+          </div>
         </motion.div>
       </div>
+
+      <MobileBottomNav />
     </div>
   );
 };
