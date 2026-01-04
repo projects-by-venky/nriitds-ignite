@@ -121,6 +121,46 @@
   }
 }
 
+/* Safe Area for Mobile */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+/* Mobile-First Touch Targets */
+@layer components {
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px] flex items-center justify-center;
+  }
+  
+  .mobile-card {
+    @apply bg-card rounded-2xl border border-border p-4 shadow-sm;
+  }
+  
+  .mobile-header {
+    @apply sticky top-0 z-40 bg-card/95 backdrop-blur-lg border-b border-border px-4 py-3;
+  }
+  
+  .mobile-page {
+    @apply min-h-screen pb-20 md:pb-0;
+  }
+  
+  .mobile-section {
+    @apply px-4 py-4 md:px-6 md:py-6;
+  }
+  
+  .mobile-title {
+    @apply text-xl font-bold text-foreground;
+  }
+  
+  .mobile-subtitle {
+    @apply text-sm text-muted-foreground;
+  }
+}
+
 @layer components {
   /* Neon Card Styles */
   .card-neon {

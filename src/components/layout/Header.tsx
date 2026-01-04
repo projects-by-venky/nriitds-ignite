@@ -21,9 +21,9 @@ const Header = () => {
     name: "Events",
     href: "/events"
   }];
-  return <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border">
+  return <header className="fixed top-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-lg border-b border-border">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-14 md:h-16">
           {/* Logo */}
           <Link to="/">
             <motion.div initial={{
@@ -32,16 +32,19 @@ const Header = () => {
           }} animate={{
             opacity: 1,
             x: 0
-          }} className="flex items-center gap-3 cursor-pointer">
-              <div className="w-10 h-10 rounded-lg bg-gradient-cyber flex items-center justify-center shadow-[0_0_20px_rgba(37,99,235,0.4)]">
-                <GraduationCap className="w-6 h-6 text-white" />
+          }} className="flex items-center gap-2 md:gap-3 cursor-pointer">
+              <div className="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-gradient-cyber flex items-center justify-center shadow-[0_0_20px_rgba(37,99,235,0.4)]">
+                <GraduationCap className="w-5 h-5 md:w-6 md:h-6 text-white" />
               </div>
-              <span className="text-xl font-bold text-foreground font-heading">NRIIT</span>
+              <div className="flex flex-col">
+                <span className="text-lg md:text-xl font-bold text-foreground font-heading leading-tight">NRIIT</span>
+                <span className="text-[10px] text-muted-foreground hidden sm:block leading-tight">Ignite</span>
+              </div>
             </motion.div>
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-1 absolute left-1/2 transform -translate-x-1/2">
+          <nav className="hidden lg:flex items-center gap-1 absolute left-1/2 transform -translate-x-1/2">
             {navLinks.map((link, index) => {
               const isActive = location.pathname === link.href;
               return <Link key={link.name} to={link.href}>
@@ -53,45 +56,48 @@ const Header = () => {
                   y: 0
                 }} transition={{
                   delay: index * 0.1
-                }} className="relative px-4 py-2 text-sm font-medium text-foreground hover:text-primary transition-colors group">
+                }} className={`relative px-4 py-2 text-sm font-medium transition-colors group ${isActive ? 'text-primary' : 'text-foreground hover:text-primary'}`}>
                   {link.name}
-                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-3/4 rounded-full" />
+                  <span className={`absolute bottom-0 left-1/2 -translate-x-1/2 h-0.5 bg-primary transition-all duration-300 rounded-full ${isActive ? 'w-3/4' : 'w-0 group-hover:w-3/4'}`} />
                 </motion.div>
               </Link>;
             })}
           </nav>
 
-          {/* Let's See Button - Right Side */}
-          <motion.button initial={{
-            opacity: 0,
-            y: -10
-          }} animate={{
-            opacity: 1,
-            y: 0
-          }} transition={{
-            delay: navLinks.length * 0.1
-          }} whileHover={{
-            scale: 1.05,
-            boxShadow: "0 0 20px hsl(217 91% 60% / 0.6)"
-          }} whileTap={{
-            scale: 0.98
-          }} onClick={() => {
-            const branchesSection = document.getElementById('branches');
-            if (branchesSection) {
-              branchesSection.scrollIntoView({ behavior: 'smooth' });
-            }
-          }} className="hidden md:block px-6 py-2 rounded-lg bg-primary text-white font-semibold shadow-[0_0_20px_hsl(217_91%_60%_/_0.4)] hover:shadow-[0_0_30px_hsl(217_91%_60%_/_0.6)] transition-all text-sm cursor-pointer">
-            Lets See
-          </motion.button>
+          {/* Right Side Actions */}
+          <div className="flex items-center gap-2">
+            {/* Let's See Button - Desktop Only */}
+            <motion.button initial={{
+              opacity: 0,
+              y: -10
+            }} animate={{
+              opacity: 1,
+              y: 0
+            }} transition={{
+              delay: navLinks.length * 0.1
+            }} whileHover={{
+              scale: 1.05,
+              boxShadow: "0 0 20px hsl(217 91% 60% / 0.6)"
+            }} whileTap={{
+              scale: 0.98
+            }} onClick={() => {
+              const branchesSection = document.getElementById('branches');
+              if (branchesSection) {
+                branchesSection.scrollIntoView({ behavior: 'smooth' });
+              }
+            }} className="hidden lg:block px-5 py-2 rounded-xl bg-primary text-white font-semibold shadow-[0_0_20px_hsl(217_91%_60%_/_0.4)] hover:shadow-[0_0_30px_hsl(217_91%_60%_/_0.6)] transition-all text-sm cursor-pointer">
+              Lets See
+            </motion.button>
 
-          {/* Mobile Menu Button */}
-          <button onClick={() => setIsOpen(!isOpen)} className="md:hidden p-2 rounded-lg hover:bg-muted transition-colors">
-            {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
+            {/* Mobile/Tablet Menu Button */}
+            <button onClick={() => setIsOpen(!isOpen)} className="lg:hidden p-2.5 rounded-xl hover:bg-muted transition-colors touch-target">
+              {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile/Tablet Menu */}
       <AnimatePresence>
         {isOpen && <motion.div initial={{
         opacity: 0,
@@ -102,22 +108,22 @@ const Header = () => {
       }} exit={{
         opacity: 0,
         height: 0
-      }} className="md:hidden border-t border-border bg-background">
-            <nav className="container mx-auto px-4 py-4 flex flex-col gap-2">
+      }} className="lg:hidden border-t border-border bg-card">
+            <nav className="container mx-auto px-4 py-3 flex flex-col gap-1">
               {navLinks.map(link => {
             const isActive = location.pathname === link.href;
-            return <Link key={link.name} to={link.href} onClick={() => setIsOpen(false)} className={`px-4 py-3 rounded-lg text-sm font-medium transition-colors ${isActive ? "text-primary bg-primary/10" : "text-foreground hover:bg-muted"}`}>
+            return <Link key={link.name} to={link.href} onClick={() => setIsOpen(false)} className={`px-4 py-3.5 rounded-xl text-base font-medium transition-colors touch-target justify-start ${isActive ? "text-primary bg-primary/10" : "text-foreground hover:bg-muted"}`}>
                     {link.name}
                   </Link>;
           })}
-              <button className="mt-2 px-6 py-3 rounded-lg bg-primary text-white font-semibold shadow-[0_0_20px_hsl(217_91%_60%_/_0.4)] text-sm w-full" onClick={() => {
+              <button className="mt-3 px-6 py-3.5 rounded-xl bg-gradient-cyber text-white font-semibold text-base w-full touch-target" onClick={() => {
             setIsOpen(false);
             const branchesSection = document.getElementById('branches');
             if (branchesSection) {
               branchesSection.scrollIntoView({ behavior: 'smooth' });
             }
           }}>
-                Lets See
+                Explore Branches
               </button>
             </nav>
           </motion.div>}

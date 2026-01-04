@@ -4,8 +4,11 @@ import { motion } from "framer-motion";
 import { ArrowLeft, Download, Search, X } from "lucide-react";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import MobileBottomNav from "@/components/layout/MobileBottomNav";
+import MobileSearchBar from "@/components/mobile/MobileSearchBar";
+import MobileMonthlyCard from "@/components/mobile/MobileMonthlyCard";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 // Subject data with faculty names
 const subjects = [
@@ -44,7 +47,9 @@ const generateMonthlyData = (section: string) => {
     attendanceDate: "31/03/2025",
     students: students.map(student => ({
       ...student,
-      subjectAttendance: subjects.map(() => ({
+      subjectAttendance: subjects.map((subject) => ({
+        code: subject.code,
+        name: subject.name,
         conducted: Math.floor(Math.random() * 50) + 40,
         attended: Math.floor(Math.random() * 40) + 10,
       })),
@@ -66,12 +71,13 @@ const departments = {
 const MonthlyAttendance = () => {
   const { deptId, section } = useParams<{ deptId: string; section: string }>();
   const dept = deptId ? departments[deptId as keyof typeof departments] : null;
+  const isMobile = useIsMobile();
   const [searchQuery, setSearchQuery] = useState("");
   
   const formattedSection = section?.replace(/-/g, ' ') || '';
   const data = generateMonthlyData(section || '2-2-DS-A');
 
-  // Extract class and semester from section (e.g., "2-2-DS-A" -> "2nd B.TECH", "SEM:2")
+  // Extract class and semester from section
   const sectionParts = section?.split('-') || [];
   const year = sectionParts[0] || '2';
   const sem = sectionParts[1] || '2';
@@ -85,20 +91,15 @@ const MonthlyAttendance = () => {
     }
     
     const query = searchQuery.trim().toUpperCase();
-    
-    // Check if query is purely numeric (suffix search)
     const isNumericQuery = /^\d+$/.test(query);
     
     return data.students.filter(student => {
       const rollNoUpper = student.rollNumber.toUpperCase();
       
       if (isNumericQuery) {
-        // For numeric input: match ONLY roll numbers ending EXACTLY with this number
-        // Extract the numeric suffix from the roll number
         const rollNoNumericSuffix = student.rollNumber.replace(/\D/g, '').slice(-query.length);
         return rollNoNumericSuffix === query;
       } else {
-        // For full roll number input: exact match only
         return rollNoUpper === query;
       }
     });
@@ -106,9 +107,9 @@ const MonthlyAttendance = () => {
 
   if (!dept) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center px-4">
         <div className="text-center">
-          <h1 className="text-4xl font-bold mb-4">Department Not Found</h1>
+          <h1 className="text-2xl md:text-4xl font-bold mb-4">Department Not Found</h1>
           <Link to="/" className="text-primary hover:underline">Return Home</Link>
         </div>
       </div>
@@ -119,198 +120,218 @@ const MonthlyAttendance = () => {
     <div className="min-h-screen bg-gradient-to-b from-background via-background/95 to-background">
       <Header />
       
-      <main className="pt-24 pb-20">
-        <div className="container mx-auto px-4">
+      <main className="pt-16 md:pt-20 pb-24 md:pb-20">
+        <div className="container mx-auto px-4 md:px-6">
           {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-6"
+            className="mb-4 md:mb-6"
           >
             <Link 
               to={`/department/${deptId}/student-portal`}
-              className="inline-flex items-center gap-2 text-white/70 hover:text-white mb-4 transition-colors"
+              className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-3 transition-colors touch-target justify-start"
             >
               <ArrowLeft className="w-5 h-5" />
-              Back to Student Portal
+              <span className="text-sm">Back</span>
             </Link>
             
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div className="flex flex-col gap-4">
               <div>
-                <h1 className="text-3xl font-black mb-1 bg-clip-text text-transparent"
+                <h1 className="text-xl md:text-3xl font-black mb-1 bg-clip-text text-transparent"
                     style={{ backgroundImage: "linear-gradient(135deg, #0EA5E9, #1E3A8A)" }}>
-                  Monthly Cumulative Attendance
+                  Monthly Attendance
                 </h1>
-                <p className="text-lg text-white/70">{formattedSection} - {dept.name}</p>
+                <p className="text-sm md:text-base text-muted-foreground">
+                  {formattedSection} • {dept.name}
+                </p>
               </div>
               
-              {/* Search Bar */}
-              <div className="flex-1 max-w-md">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                  <Input
-                    type="text"
-                    placeholder="Exact roll number or suffix (e.g., 40)"
+              {/* Search & Actions */}
+              <div className="flex gap-2 md:gap-3">
+                <div className="flex-1">
+                  <MobileSearchBar
                     value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-9 pr-10 bg-white/10 border-white/20 text-white placeholder:text-white/50"
+                    onChange={setSearchQuery}
+                    placeholder="Exact roll no. or suffix (e.g., 40)"
                   />
-                  {searchQuery && (
-                    <button
-                      onClick={() => setSearchQuery("")}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50 hover:text-white"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
-                  )}
                 </div>
+                <Button 
+                  className="h-12 px-3 md:px-4 bg-gradient-cyber text-white hover:opacity-90"
+                  onClick={() => {}}
+                >
+                  <Download className="w-4 h-4 md:mr-2" />
+                  <span className="hidden md:inline">Export</span>
+                </Button>
               </div>
-              
-              <Button 
-                className="bg-gradient-cyber text-white hover:opacity-90"
-                onClick={() => {}}
-              >
-                <Download className="w-4 h-4 mr-2" />
-                Export
-              </Button>
             </div>
           </motion.div>
 
-          {/* Attendance Table */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="bg-white rounded-lg border-2 border-[#1E3A8A] shadow-xl overflow-hidden"
-          >
-            <div className="overflow-x-auto max-h-[70vh]">
-              <table className="w-full border-collapse text-sm">
-                {/* Institute Header */}
-                <thead className="sticky top-0 z-20">
-                  <tr className="bg-blue-50 border-b-2 border-[#1E3A8A]">
-                    <th colSpan={subjects.length * 2 + 4} className="px-4 py-3 text-center font-bold border-b border-[#1E3A8A] text-base text-black">
-                      NRI INSTITUTE OF TECHNOLOGY::GUNTUR
-                      <span className="ml-8">A-ATTENDED</span>
-                      <span className="ml-4">C-CONDUCTED</span>
-                    </th>
-                  </tr>
-                  <tr className="bg-blue-50 border-b-2 border-[#1E3A8A]">
-                    <th colSpan={subjects.length * 2 + 4} className="px-4 py-2 text-center font-bold border-b border-[#1E3A8A] text-black">
-                      CLASS:{year}nd B.TECH &nbsp;&nbsp; SEM:{sem} &nbsp;&nbsp; BRANCH: {branch}-{sectionLetter} &nbsp;&nbsp; CUMULATIVE ATTENDANCE UP TO - {data.attendanceDate}
-                    </th>
-                  </tr>
-                  {/* Subject Headers */}
-                  <tr className="bg-white border-b border-[#1E3A8A]">
-                    <th rowSpan={3} className="sticky left-0 z-30 bg-white px-3 py-2 text-center font-bold border-r-2 border-b border-[#1E3A8A] min-w-[100px] text-black">
-                      Roll No
-                    </th>
-                    {subjects.map((subject, idx) => (
-                      <th key={idx} colSpan={2} className="px-2 py-2 text-center font-bold border-r border-[#1E3A8A] text-black bg-blue-50">
-                        {subject.code}
+          {/* Mobile View - Card Layout */}
+          {isMobile ? (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="space-y-3"
+            >
+              {filteredStudents.length === 0 ? (
+                <div className="bg-card border border-border rounded-2xl p-8 text-center">
+                  <p className="text-muted-foreground">No students found matching "{searchQuery}"</p>
+                </div>
+              ) : (
+                filteredStudents.map((student) => {
+                  const totalConducted = student.subjectAttendance.reduce((sum, a) => sum + a.conducted, 0);
+                  const totalAttended = student.subjectAttendance.reduce((sum, a) => sum + a.attended, 0);
+                  const percentage = Math.round((totalAttended / totalConducted) * 100);
+                  
+                  return (
+                    <MobileMonthlyCard
+                      key={student.rollNumber}
+                      rollNumber={student.rollNumber}
+                      subjects={student.subjectAttendance}
+                      totalConducted={totalConducted}
+                      totalAttended={totalAttended}
+                      percentage={percentage}
+                    />
+                  );
+                })
+              )}
+            </motion.div>
+          ) : (
+            /* Desktop View - Table */
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="bg-white rounded-xl border-2 border-[#1E3A8A] shadow-xl overflow-hidden"
+            >
+              <div className="overflow-x-auto max-h-[70vh]">
+                <table className="w-full border-collapse text-sm">
+                  {/* Institute Header */}
+                  <thead className="sticky top-0 z-20">
+                    <tr className="bg-blue-50 border-b-2 border-[#1E3A8A]">
+                      <th colSpan={subjects.length * 2 + 4} className="px-4 py-3 text-center font-bold border-b border-[#1E3A8A] text-base text-black">
+                        NRI INSTITUTE OF TECHNOLOGY::GUNTUR
+                        <span className="ml-8">A-ATTENDED</span>
+                        <span className="ml-4">C-CONDUCTED</span>
                       </th>
-                    ))}
-                    <th rowSpan={3} className="px-2 py-2 text-center font-bold border-r border-[#1E3A8A] min-w-[50px] text-black bg-blue-50">
-                      TC
-                    </th>
-                    <th rowSpan={3} className="px-2 py-2 text-center font-bold border-r border-[#1E3A8A] min-w-[50px] text-black bg-blue-50">
-                      TA
-                    </th>
-                    <th rowSpan={3} className="px-2 py-2 text-center font-bold border-[#1E3A8A] min-w-[50px] text-black bg-blue-50">
-                      PER
-                    </th>
-                  </tr>
-                  {/* Faculty Names */}
-                  <tr className="bg-white border-b border-[#1E3A8A]">
-                    {subjects.map((subject, idx) => (
-                      <th key={idx} colSpan={2} className="px-2 py-1 text-center font-normal border-r border-[#1E3A8A] text-xs text-black">
-                        {subject.faculty}
-                      </th>
-                    ))}
-                  </tr>
-                  {/* C/A Headers */}
-                  <tr className="bg-white border-b-2 border-[#1E3A8A]">
-                    {subjects.map((_, idx) => (
-                      <React.Fragment key={idx}>
-                        <th className="px-1 py-1 text-center font-bold border-r border-[#1E3A8A] min-w-[35px] text-black">C</th>
-                        <th className="px-1 py-1 text-center font-bold border-r border-[#1E3A8A] min-w-[35px] text-black">A</th>
-                      </React.Fragment>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredStudents.length === 0 ? (
-                    <tr>
-                      <td colSpan={subjects.length * 2 + 4} className="px-4 py-8 text-center text-black font-medium">
-                        No students found matching "{searchQuery}"
-                      </td>
                     </tr>
-                  ) : (
-                    filteredStudents.map((student, idx) => {
-                      const totalConducted = student.subjectAttendance.reduce((sum, a) => sum + a.conducted, 0);
-                      const totalAttended = student.subjectAttendance.reduce((sum, a) => sum + a.attended, 0);
-                      const percentage = Math.round((totalAttended / totalConducted) * 100);
-                      
-                      return (
-                        <tr key={student.rollNumber} className={`border-b border-[#1E3A8A] hover:bg-blue-50/50 transition-colors ${idx % 2 === 0 ? 'bg-white' : 'bg-gray-50/30'}`}>
-                          <td className="sticky left-0 z-10 px-3 py-2 border-r-2 border-[#1E3A8A] font-semibold text-black text-center"
-                              style={{ backgroundColor: idx % 2 === 0 ? 'white' : 'rgba(249, 250, 251, 0.3)' }}>
-                            {student.rollNumber}
-                          </td>
-                          {student.subjectAttendance.map((att, attIdx) => (
-                            <React.Fragment key={attIdx}>
-                              <td className="px-1 py-2 border-r border-[#1E3A8A] text-center text-black">
-                                {att.conducted}
-                              </td>
-                              <td className="px-1 py-2 border-r border-[#1E3A8A] text-center text-black">
-                                {att.attended}
-                              </td>
-                            </React.Fragment>
-                          ))}
-                          <td className="px-1 py-2 border-r border-[#1E3A8A] text-center font-medium text-black">
-                            {totalConducted}
-                          </td>
-                          <td className="px-1 py-2 border-r border-[#1E3A8A] text-center font-medium text-black">
-                            {totalAttended}
-                          </td>
-                          <td className={`px-1 py-2 border-[#1E3A8A] text-center font-bold ${
-                            percentage >= 75 ? 'text-black' : 'text-pink-600 bg-pink-100'
-                          }`}>
-                            {percentage}
-                          </td>
-                        </tr>
-                      );
-                    })
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </motion.div>
+                    <tr className="bg-blue-50 border-b-2 border-[#1E3A8A]">
+                      <th colSpan={subjects.length * 2 + 4} className="px-4 py-2 text-center font-bold border-b border-[#1E3A8A] text-black">
+                        CLASS:{year}nd B.TECH &nbsp;&nbsp; SEM:{sem} &nbsp;&nbsp; BRANCH: {branch}-{sectionLetter} &nbsp;&nbsp; CUMULATIVE ATTENDANCE UP TO - {data.attendanceDate}
+                      </th>
+                    </tr>
+                    {/* Subject Headers */}
+                    <tr className="bg-white border-b border-[#1E3A8A]">
+                      <th rowSpan={3} className="sticky left-0 z-30 bg-white px-3 py-2 text-center font-bold border-r-2 border-b border-[#1E3A8A] min-w-[100px] text-black">
+                        Roll No
+                      </th>
+                      {subjects.map((subject, idx) => (
+                        <th key={idx} colSpan={2} className="px-2 py-2 text-center font-bold border-r border-[#1E3A8A] text-black bg-blue-50">
+                          {subject.code}
+                        </th>
+                      ))}
+                      <th rowSpan={3} className="px-2 py-2 text-center font-bold border-r border-[#1E3A8A] min-w-[50px] text-black bg-blue-50">
+                        TC
+                      </th>
+                      <th rowSpan={3} className="px-2 py-2 text-center font-bold border-r border-[#1E3A8A] min-w-[50px] text-black bg-blue-50">
+                        TA
+                      </th>
+                      <th rowSpan={3} className="px-2 py-2 text-center font-bold border-[#1E3A8A] min-w-[50px] text-black bg-blue-50">
+                        PER
+                      </th>
+                    </tr>
+                    {/* Faculty Names */}
+                    <tr className="bg-white border-b border-[#1E3A8A]">
+                      {subjects.map((subject, idx) => (
+                        <th key={idx} colSpan={2} className="px-2 py-1 text-center font-normal border-r border-[#1E3A8A] text-xs text-black">
+                          {subject.faculty}
+                        </th>
+                      ))}
+                    </tr>
+                    {/* C/A Headers */}
+                    <tr className="bg-white border-b-2 border-[#1E3A8A]">
+                      {subjects.map((_, idx) => (
+                        <React.Fragment key={idx}>
+                          <th className="px-1 py-1 text-center font-bold border-r border-[#1E3A8A] min-w-[35px] text-black">C</th>
+                          <th className="px-1 py-1 text-center font-bold border-r border-[#1E3A8A] min-w-[35px] text-black">A</th>
+                        </React.Fragment>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredStudents.length === 0 ? (
+                      <tr>
+                        <td colSpan={subjects.length * 2 + 4} className="px-4 py-8 text-center text-black font-medium">
+                          No students found matching "{searchQuery}"
+                        </td>
+                      </tr>
+                    ) : (
+                      filteredStudents.map((student, idx) => {
+                        const totalConducted = student.subjectAttendance.reduce((sum, a) => sum + a.conducted, 0);
+                        const totalAttended = student.subjectAttendance.reduce((sum, a) => sum + a.attended, 0);
+                        const percentage = Math.round((totalAttended / totalConducted) * 100);
+                        
+                        return (
+                          <tr key={student.rollNumber} className={`border-b border-[#1E3A8A] hover:bg-blue-50/50 transition-colors ${idx % 2 === 0 ? 'bg-white' : 'bg-gray-50/30'}`}>
+                            <td className="sticky left-0 z-10 px-3 py-2 border-r-2 border-[#1E3A8A] font-semibold text-black text-center"
+                                style={{ backgroundColor: idx % 2 === 0 ? 'white' : 'rgba(249, 250, 251, 0.3)' }}>
+                              {student.rollNumber}
+                            </td>
+                            {student.subjectAttendance.map((att, attIdx) => (
+                              <React.Fragment key={attIdx}>
+                                <td className="px-1 py-2 border-r border-[#1E3A8A] text-center text-black">
+                                  {att.conducted}
+                                </td>
+                                <td className="px-1 py-2 border-r border-[#1E3A8A] text-center text-black">
+                                  {att.attended}
+                                </td>
+                              </React.Fragment>
+                            ))}
+                            <td className="px-1 py-2 border-r border-[#1E3A8A] text-center font-medium text-black">
+                              {totalConducted}
+                            </td>
+                            <td className="px-1 py-2 border-r border-[#1E3A8A] text-center font-medium text-black">
+                              {totalAttended}
+                            </td>
+                            <td className={`px-1 py-2 border-[#1E3A8A] text-center font-bold ${
+                              percentage >= 75 ? 'text-black' : 'text-pink-600 bg-pink-100'
+                            }`}>
+                              {percentage}
+                            </td>
+                          </tr>
+                        );
+                      })
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </motion.div>
+          )}
 
           {/* Legend */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4 }}
-            className="mt-6 flex items-center gap-6 text-sm"
+            className="mt-4 md:mt-6 flex flex-wrap items-center gap-3 md:gap-6 text-xs md:text-sm"
           >
             <div className="flex items-center gap-2">
-              <span className="text-white/70 font-medium">TC - Total Conducted</span>
+              <span className="text-muted-foreground">TC - Total Conducted</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-white/70 font-medium">TA - Total Attended</span>
+              <span className="text-muted-foreground">TA - Total Attended</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-white/70 font-medium">PER - Percentage</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded bg-pink-500"></div>
-              <span className="text-white/70">&lt; 75% (Low Attendance)</span>
+              <div className="w-3 h-3 md:w-4 md:h-4 rounded bg-red-500"></div>
+              <span className="text-muted-foreground">&lt; 75%</span>
             </div>
           </motion.div>
         </div>
       </main>
 
       <Footer />
+      <MobileBottomNav />
     </div>
   );
 };
