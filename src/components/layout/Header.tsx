@@ -36,10 +36,7 @@ const Header = () => {
               <div className="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-gradient-cyber flex items-center justify-center shadow-[0_0_20px_rgba(37,99,235,0.4)]">
                 <GraduationCap className="w-5 h-5 md:w-6 md:h-6 text-white" />
               </div>
-              <div className="flex flex-col">
-                <span className="text-lg md:text-xl font-bold text-foreground font-heading leading-tight">NRIIT</span>
-                <span className="text-[10px] text-muted-foreground hidden sm:block leading-tight">Ignite</span>
-              </div>
+              <span className="text-lg md:text-xl font-bold text-foreground font-heading leading-tight">NRIIT</span>
             </motion.div>
           </Link>
 
